@@ -208,10 +208,6 @@ std::string PL(std::string s) {
   return  t + "\n";
 }
 
-MP_data::MP_data () {
-  idx = 0;
-}
-
 void MP_text::clear() {
   x = y = 0;
   xx = yy = 1;
@@ -409,7 +405,9 @@ void MP_path::print_pdf(std::ofstream & F) {
 
   if (fillstroke == MP_fill) F << PL("f*");
   else if (fillstroke == MP_stroke) F << PL("S");
-  else if (fillstroke == MP_clip) F << PL("W* n");;
+  else if (fillstroke == MP_fillstroke) F << PL("B*");
+  else if (fillstroke == MP_clip) F << PL("W* n");
+  else therror(("invalid path drawing operation"));
 }
 
 void MP_data::add(int i) {
@@ -709,7 +707,7 @@ void converted_data::print_svg (std::ofstream & F, std::string unique_prefix) {
 }
 
 void converted_data::print_pdf(std::ofstream & F, std::string name) {
-  if (MP.index.empty()) return;
+//  if (MP.index.empty()) return;  // can't skip the empty XObject definition, as it might be referenced somewhere
   conv_mode = mode;
 
   double HS = urx - llx;
@@ -771,10 +769,6 @@ void converted_data::print_pdf(std::ofstream & F, std::string name) {
 void converted_data::clear() {
   MP.clear();
   fonts.clear();
-}
-
-converted_data::converted_data() {
-  clear();
 }
 
 
